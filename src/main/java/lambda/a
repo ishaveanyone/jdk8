@@ -1,0 +1,52 @@
+lambda在java中是一个对象,但是在pyhton之类的语言中lambada 是函数
+标准格式
+(type agr..)->{}
+在类型可以推断情况下 可以省略 类型 ，如果是 一个参数 省略（），返回数据中，可以省略return
+
+方法式接口通过lambda expressions, method references, or constructor references 来创建实例
+
+Note that instances of functional interfaces can be created with
+lambda expressions, method references, or constructor references.
+
+如果只有一个抽象方法 那么就是一个函数是接口
+
+如果使用了注解那么ide就会按照函数是接口要求设计改接口
+
+就算你有没有声明注解，只要是满足了设计规则，都会被认为 是函数式接口
+
+外部迭代（for下标循环）
+内部迭代（不依赖迭代器）
+
+
+lambda 什么类型必须通过上下文才能进行判断
+
+菱形语法（砖石语法）
+
+流初步---集合-----lambda 表达式密切相关
+
+stream 串行流  很像linux 中的管道操作
+
+parallelStream并行流
+
+
+lambda 传递的不只是值 还有行为
+
+
+基本语法
+()->{}
+
+
+两种方式
+expression
+
+statement
+
+
+
+consumer ----输入消费没有返回
+function ----输入消费之后并且可以执行动作进行返回
+
+行为前提不存在
+
+高阶函数
+如果接受一个函数作为参数，或者返回一个函数那么就是一个高阶函数

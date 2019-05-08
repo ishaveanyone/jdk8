@@ -1,0 +1,10 @@
+使用的apply
+
+使用compose
+
+使用andthen
+
+BiFunction 接收两个参数 ，返回一个结果
+
+
+Supplier  ---应用在工厂中

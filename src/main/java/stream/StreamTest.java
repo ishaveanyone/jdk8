@@ -1,12 +1,14 @@
 package stream;
 
+import jdk.nashorn.api.scripting.ScriptUtils;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import static java.util.stream.Collectors.*;//静态导入方法
+
+import java.util.stream.Collector;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -39,7 +41,7 @@ public class StreamTest
 //            System.out.println(s);
 //        });
 
-        String str =stream.collect(Collectors.joining(",")).toString();
+        String str =stream.collect(joining(",")).toString();
         System.out.println(str);
 //        List<String> list1= (List<String>)stream.collect(Collectors.toCollection(ArrayList::new));
 //        list1.forEach(System.out::print);
@@ -59,7 +61,7 @@ public class StreamTest
         Stream<List<Integer>> stream=Stream.of(Arrays.asList(1,2),Arrays.asList(3),
                 Arrays.asList(4,5,6));
 
-        List list3= stream.flatMap(o -> o.stream()).map(integer -> integer*integer).collect(Collectors.toList());
+        List list3= stream.flatMap(o -> o.stream()).map(integer -> integer*integer).collect(toList());
 
         list3.forEach(System.out::println);
 
@@ -79,7 +81,88 @@ public class StreamTest
 
 
 //        System.out.println(count);
+    }
+
+// 并行流 串行流
+    @Test
+    public  void test4(){
+        List<String> list =new ArrayList<>(5000000);
+        for (int i=0;i<5000000;i++){
+            list.add(UUID.randomUUID().toString());
+        }
+
+        long startTime=System.nanoTime();
+
+        list.parallelStream().sorted().count();
+//        list.stream().sorted().count();
+
+        long endTime=System.nanoTime();
+
+        System.out.println("花费时间："+(TimeUnit.NANOSECONDS.toMillis(endTime-startTime)));
+
+    }
 
 
+
+    // 并行流 串行流 流短路
+    @Test
+    public  void test5(){
+        List<String> list=Arrays.asList("hello","aaaaa","aassddd","dffa");
+        list.stream().filter(s -> s.length()==5).limit(1).forEach(s -> System.out.println(s.length()));
+    }
+
+    // 关于使用flatMap
+    @Test
+    public  void test6(){
+
+        List<String> list=Arrays.asList("hello word","hello hi","ken xixi","hi xixi");
+        list.stream().map(s -> s.split(" ")).
+                flatMap(strings ->{
+                    for(int i=0;i<strings.length;i++){
+                        strings[i]=strings[i]+"1";
+                    }
+                    return Arrays.stream(strings);
+                }).distinct().forEach(System.out::println);
+    }
+
+    @Test
+    public  void test7(){
+        List<String> list1=Arrays.asList("hello","hi","你好");
+        List<String> list2=Arrays.asList("王五","赵四","张三");
+        list1.stream().flatMap(s -> list2.stream().map(s1 -> s+" "+s1)).
+                collect(toList()).forEach(System.out::println);
+
+    }
+
+//  使用分组
+    @Test
+    public  void test8(){
+        Student student1 =new Student("a",11);
+        Student student2 =new Student("b",12);
+        Student student3 =new Student("b",13);
+        Student student4 =new Student("c",14);
+        Student student5 =new Student("a",15);
+
+        List<Student> list=Arrays.asList(student1,student2,student3,student4,student5);
+        Map<String,List<Student>> stringListMap= list.stream().collect(groupingBy(Student::getName));
+        for(Map.Entry<String,List<Student>> entry:stringListMap.entrySet()){
+
+            System.out.println(entry.getKey());
+            entry.getValue().forEach(student -> System.out.println(student.getAge()));
+        }
+    }
+
+
+
+    // 越具体越好 ，针对你处理的问题 ，越具体的 流 越好 比如求和 那么就用 intstream
+    @Test
+    public  void test9(){
+        Student student1 =new Student("a",11);
+        Student student2 =new Student("b",12);
+        Student student3 =new Student("b",13);
+        Student student4 =new Student("c",14);
+        Student student5 =new Student("a",15);
+
+        List<Student> list=Arrays.asList(student1,student2,student3,student4,student5);
     }
 }
